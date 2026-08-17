@@ -17,6 +17,10 @@
 import asyncio
 import unittest
 
+import pytest
+
+pytest.importorskip("opentelemetry.sdk")
+
 from opentelemetry import trace
 from opentelemetry.sdk import trace as sdk_trace
 from opentelemetry.sdk.trace import export as sdk_trace_export

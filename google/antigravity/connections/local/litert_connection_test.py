@@ -656,7 +656,17 @@ class LiteRTConnectionTest(unittest.IsolatedAsyncioTestCase):
 
   def test_litert_logging_defaults_to_silent(self):
     """Verify LiteRT logging defaults to SILENT (non-verbose)."""
-    with mock.patch.object(litert_connection, "litert_lm") as mock_litert_lm:
+    with (
+        mock.patch.object(litert_connection, "litert_lm") as mock_litert_lm,
+        mock.patch.object(litert_connection.logging, "getLogger") as mock_get_logger,
+    ):
+      root_logger = mock.MagicMock()
+      root_logger.isEnabledFor.return_value = False
+      antigravity_logger = mock.MagicMock()
+      antigravity_logger.isEnabledFor.return_value = False
+      mock_get_logger.side_effect = lambda name=None: (
+          antigravity_logger if name == "google.antigravity" else root_logger
+      )
       mock_litert_lm.LogSeverity.SILENT = 1000
       mock_litert_lm.set_min_log_severity = mock.MagicMock()
       config = litert_connection_config.LiteRTAgentConfig(

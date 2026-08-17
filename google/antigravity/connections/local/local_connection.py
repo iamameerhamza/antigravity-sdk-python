@@ -523,14 +523,17 @@ class LocalConnection(connection.Connection):
         json_format.Parse(raw_msg, event)
         await self._processor.process_event(event)
     except websockets.ConnectionClosed as e:
+      close_code = getattr(getattr(e, "rcvd", None), "code", None)
+      if close_code is None:
+        close_code = getattr(e, "code", "unknown")
       if self._disconnecting:
         # Expected closure.
-        logging.info("WebSocket closed (code %s); normal shutdown.", e.code)
+        logging.info("WebSocket closed (code %s); normal shutdown.", close_code)
       else:
         # Unexpected closure.
         stderr_tail = "\n".join(self._stderr_lines) or "(no stderr output)"
         error_msg = (
-            f"Harness process exited unexpectedly (WS close code {e.code})."
+            f"Harness process exited unexpectedly (WS close code {close_code})."
             f"\nHarness stderr:\n{stderr_tail}"
         )
         logging.error(error_msg)
