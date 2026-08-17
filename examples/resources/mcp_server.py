@@ -22,7 +22,10 @@ import socket
 import sys
 from typing import Literal, Sequence
 
-from mcp.server.fastmcp import server
+try:
+  from mcp.server.fastmcp import server
+except ModuleNotFoundError:
+  from mcp.server import mcpserver as server
 import uvicorn
 
 Transport = Literal["stdio", "sse", "streamable-http"]

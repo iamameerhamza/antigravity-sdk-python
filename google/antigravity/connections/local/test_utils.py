@@ -28,6 +28,7 @@ from google.antigravity.tools import tool_runner
 
 class TestWebSocket:
   """Mock WebSocket allowing async injection and inspection of messages."""
+  __test__ = False
 
   def __init__(self):
     self.queue = asyncio.Queue()
@@ -65,6 +66,7 @@ class TestLocalHarness:
   - 'wait_for_response' allows the test to wait for and inspect messages
     sent BY the Python SDK back to the Go harness.
   """
+  __test__ = False
 
   def __init__(
       self,
